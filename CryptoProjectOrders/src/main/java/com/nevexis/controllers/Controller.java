@@ -1,0 +1,40 @@
+package com.nevexis.controllers;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.nevexis.entities.Orders;
+import com.nevexis.enums.OrderType;
+import com.nevexis.enums.StatusEnum;
+import com.nevexis.services.DBService;
+
+@RestController
+public class Controller {
+	@Autowired
+	private DBService dbService;
+
+	@PostMapping("/{trader}/create/order")
+	public Orders createNewOrder(@PathVariable("trader") Long traderID, @RequestParam OrderType orderType,
+			@RequestParam Long currencyPairId, @RequestParam BigDecimal exchangeRate, @RequestParam BigDecimal amount) {
+
+		return dbService.createOrder(new Orders(dbService.getTraderById(traderID), orderType, exchangeRate,
+				dbService.getCurrencyPairById(currencyPairId), amount, StatusEnum.OPEN));
+	}
+
+	@PostMapping("/cancel/{orderId}")
+	public Orders cancelOrder(@PathVariable Long orderId) {
+		return dbService.cancelOrder(orderId);
+	}
+
+	@GetMapping("/listOrders/{status}")
+	public List<Orders> findAllOrdersByStatus(@PathVariable StatusEnum status) {
+		return dbService.getAllOrdersByStatus(status);
+	}
+}
