@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nevexis.entities.CurrencyPairs;
+import com.nevexis.entities.CurrencyPairsId;
 import com.nevexis.entities.Orders;
 import com.nevexis.entities.Traders;
 import com.nevexis.entities.Trades;
@@ -27,8 +28,8 @@ public class DBService extends BasicService {
 		return em.find(Traders.class, id);
 	}
 
-	public CurrencyPairs getCurrencyPairById(Long currencyPairId) {
-		return em.find(CurrencyPairs.class, currencyPairId);
+	public CurrencyPairs findCurrencyPair(CurrencyPairs currencyPair) {
+		return em.find(CurrencyPairs.class, new CurrencyPairsId(currencyPair));
 	}
 
 	public Orders createOrder(Orders newOrder) {
@@ -44,29 +45,26 @@ public class DBService extends BasicService {
 	}
 
 	public List<Orders> getAllOrdersByStatus(StatusEnum status) {
-		return em.createNamedQuery(getAllOrdersByStatus, Orders.class).setMaxResults(100)
-				.setParameter("status", status).getResultList();
+		return em.createNamedQuery(getAllOrdersByStatus, Orders.class).setMaxResults(100).setParameter("status", status)
+				.getResultList();
 	}
 
 	public List<Orders> getAllOpenOrdersByCurrencyPairAndOrderType(CurrencyPairs currencyPair, OrderType orderType) {
-		return em.createNamedQuery(getAllOpenOrdersByCurrencyPairAndOrderType, Orders.class).setMaxResults(100)
+		return em.createNamedQuery(getAllOpenOrdersByCurrencyPairAndOrderType, Orders.class).setMaxResults(10)
 				.setParameter("orderType", orderType).setParameter("cryptoCode", currencyPair.getCryptoCode())
 				.setParameter("fiatCode", currencyPair.getFiatCode()).getResultList();
 	}
 
 	public List<CurrencyPairs> getAllCurrencyPairs() {
-		return em.createNamedQuery(getAllCurrencyPairs, CurrencyPairs.class).setMaxResults(50).getResultList();
-	}
-
-	public void updateStatusAndAmount(Orders changedOrder) {
-		if (changedOrder != null) {
-			Orders order = em.find(Orders.class, changedOrder.getId());
-			order.setAmount(changedOrder.getAmount());
-			order.setStatus(changedOrder.getStatus());
-		}
+		return em.createNamedQuery(getAllCurrencyPairs, CurrencyPairs.class).setMaxResults(20).getResultList();
 	}
 
 	public void addTrade(Trades newTrade) {
 		em.persist(newTrade);
+	}
+	
+	public Long getCurrencyPairsCount() {
+		Long result = em.createQuery("SELECT count(c) FROM CurrencyPairs c", Long.class).getSingleResult();
+		return result;
 	}
 }

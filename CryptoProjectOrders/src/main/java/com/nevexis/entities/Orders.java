@@ -122,4 +122,8 @@ public class Orders extends BaseEntity {
 	public void setRemainingAmount(BigDecimal remainingAmount) {
 		this.remainingAmount = remainingAmount;
 	}
+
+	public void setTimestamp(Timestamp timestamp) {
+		this.timestamp = timestamp;
+	}
 }

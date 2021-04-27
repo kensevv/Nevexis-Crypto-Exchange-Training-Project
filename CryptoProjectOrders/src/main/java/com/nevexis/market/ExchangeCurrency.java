@@ -9,14 +9,13 @@ import com.nevexis.entities.Orders;
 import com.nevexis.enums.OrderType;
 import com.nevexis.services.DBService;
 
-
 public class ExchangeCurrency {
 	private DBService dbService;
 
 	private CurrencyPairs currencyPair;
 
-	private PriorityQueue<Orders> sellersQueue = new PriorityQueue<Orders>(100, new OrdersSellersComparator());
-	private PriorityQueue<Orders> buyersQueue = new PriorityQueue<Orders>(100, new OrdersBuyersComparator());
+	private PriorityQueue<Orders> sellersQueue = new PriorityQueue<Orders>(10, new OrdersSellersComparator());
+	private PriorityQueue<Orders> buyersQueue = new PriorityQueue<Orders>(10, new OrdersBuyersComparator());
 
 	public ExchangeCurrency(DBService ordersService, CurrencyPairs currencyPair) {
 		this.dbService = ordersService;

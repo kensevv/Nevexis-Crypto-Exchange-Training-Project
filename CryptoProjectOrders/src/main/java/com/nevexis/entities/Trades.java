@@ -27,7 +27,7 @@ public class Trades extends BaseEntity {
 	@Column(name = "order_type", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private OrderType orderType;
-	
+
 	@Column(nullable = false, precision = 19, scale = 10)
 	private BigDecimal exchangeRate;
 

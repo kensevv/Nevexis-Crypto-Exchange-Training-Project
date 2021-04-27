@@ -18,11 +18,12 @@ public class Exchanges {
 	private DBService dbService;
 
 	private List<ExchangeCurrency> exchanges = new ArrayList<ExchangeCurrency>();
-
+	private List<CurrencyPairs> dbCurrencyPairs = new ArrayList<CurrencyPairs>();
+	
 	@PostConstruct
 	public void init() {
-		List<CurrencyPairs> currencyPairs = dbService.getAllCurrencyPairs();
-		for (CurrencyPairs pair : currencyPairs) {
+		dbCurrencyPairs = dbService.getAllCurrencyPairs();
+		for (CurrencyPairs pair : dbCurrencyPairs) {
 			ExchangeCurrency newExchange = new ExchangeCurrency(dbService, pair);
 			newExchange.refreshAll();
 			exchanges.add(newExchange);
@@ -37,5 +38,20 @@ public class Exchanges {
 			}
 		}
 		return null;
+	}
+
+	public int getExchangesCount() {
+		return exchanges.size();
+	}
+
+	public void updateCurrencyPairsExchanges() {
+		List<CurrencyPairs> updatedDbCurrencyPairs = dbService.getAllCurrencyPairs();
+		updatedDbCurrencyPairs.removeAll(dbCurrencyPairs);
+		for(CurrencyPairs pair : updatedDbCurrencyPairs) {
+			ExchangeCurrency newExchange = new ExchangeCurrency(dbService, pair);
+			newExchange.refreshAll();
+			exchanges.add(newExchange);
+			dbCurrencyPairs.add(pair);
+		}
 	}
 }

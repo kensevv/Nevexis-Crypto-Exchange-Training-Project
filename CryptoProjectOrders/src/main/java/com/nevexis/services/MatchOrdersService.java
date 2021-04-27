@@ -33,18 +33,18 @@ public class MatchOrdersService {
 		if (null == priorityBUYOrder || null == prioritySELLOrder) {
 			return;
 		}
-		
+
 		int compareExchanges = prioritySELLOrder.getExchangeRate().compareTo(priorityBUYOrder.getExchangeRate());
-		
+
 		if (compareExchanges == 1) { // no match
 			return;
 		}
-		
+
 		// compare timestamps of the matching orders to determine the priority exchange
 		// rate that will be used for the transaction
 		BigDecimal priorityExchangeRate;
 		int compareTimestamps = prioritySELLOrder.getTimestamp().compareTo(priorityBUYOrder.getTimestamp());
-		
+
 		if (compareTimestamps == -1) {
 			priorityExchangeRate = prioritySELLOrder.getExchangeRate();
 		} else {
@@ -53,7 +53,7 @@ public class MatchOrdersService {
 
 		int compareRemainingAmounts = prioritySELLOrder.getRemainingAmount()
 				.compareTo(priorityBUYOrder.getRemainingAmount());
-		
+
 		BigDecimal executedAmount;
 		switch (compareRemainingAmounts) {
 		case -1:
@@ -89,11 +89,9 @@ public class MatchOrdersService {
 		matchOrders(currencyPair);
 	}
 
-	private void executeTransaction(BigDecimal priorityExchangeRate, Orders order,
-			BigDecimal executedAmount) {
+	private void executeTransaction(BigDecimal priorityExchangeRate, Orders order, BigDecimal executedAmount) {
 		Trades newTrade = new Trades(new Timestamp(System.currentTimeMillis()), order, order.getCurrencyPair(),
-				executedAmount, order.getOrderType() , priorityExchangeRate);
-		dbService.updateStatusAndAmount(order);
+				executedAmount, order.getOrderType(), priorityExchangeRate);
 		dbService.addTrade(newTrade);
 		bank.transfer(order.getTrader(), newTrade); // ?
 	}

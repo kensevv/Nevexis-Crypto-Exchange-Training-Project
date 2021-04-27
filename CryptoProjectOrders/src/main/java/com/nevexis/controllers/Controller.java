@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nevexis.entities.CurrencyPairs;
 import com.nevexis.entities.Orders;
 import com.nevexis.enums.OrderType;
 import com.nevexis.enums.StatusEnum;
@@ -22,10 +24,11 @@ public class Controller {
 
 	@PostMapping("/{trader}/create/order")
 	public Orders createNewOrder(@PathVariable("trader") Long traderID, @RequestParam OrderType orderType,
-			@RequestParam Long currencyPairId, @RequestParam BigDecimal exchangeRate, @RequestParam BigDecimal amount) {
+			@RequestBody CurrencyPairs currencyPair, @RequestParam BigDecimal exchangeRate,
+			@RequestParam BigDecimal amount) {
 
 		return dbService.createOrder(new Orders(dbService.getTraderById(traderID), orderType, exchangeRate,
-				dbService.getCurrencyPairById(currencyPairId), amount, StatusEnum.OPEN));
+				dbService.findCurrencyPair(currencyPair), amount, StatusEnum.OPEN));
 	}
 
 	@PostMapping("/cancel/{orderId}")
