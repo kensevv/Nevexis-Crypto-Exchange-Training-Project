@@ -17,9 +17,11 @@ public class ExchangeCurrency {
 	private PriorityQueue<Orders> sellersQueue = new PriorityQueue<Orders>(10, new OrdersSellersComparator());
 	private PriorityQueue<Orders> buyersQueue = new PriorityQueue<Orders>(10, new OrdersBuyersComparator());
 
-	public ExchangeCurrency(DBService ordersService, CurrencyPairs currencyPair) {
-		this.dbService = ordersService;
+	public ExchangeCurrency(DBService dbService, CurrencyPairs currencyPair) {
+		this.dbService = dbService;
 		this.currencyPair = currencyPair;
+		
+		refreshAll();
 	}
 
 	synchronized public void refreshSellers() {

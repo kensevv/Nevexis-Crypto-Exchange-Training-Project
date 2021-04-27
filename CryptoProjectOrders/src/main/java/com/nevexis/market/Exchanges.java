@@ -22,10 +22,10 @@ public class Exchanges {
 	
 	@PostConstruct
 	public void init() {
+		exchanges.clear();
 		dbCurrencyPairs = dbService.getAllCurrencyPairs();
 		for (CurrencyPairs pair : dbCurrencyPairs) {
 			ExchangeCurrency newExchange = new ExchangeCurrency(dbService, pair);
-			newExchange.refreshAll();
 			exchanges.add(newExchange);
 		}
 	}
@@ -49,7 +49,6 @@ public class Exchanges {
 		updatedDbCurrencyPairs.removeAll(dbCurrencyPairs);
 		for(CurrencyPairs pair : updatedDbCurrencyPairs) {
 			ExchangeCurrency newExchange = new ExchangeCurrency(dbService, pair);
-			newExchange.refreshAll();
 			exchanges.add(newExchange);
 			dbCurrencyPairs.add(pair);
 		}

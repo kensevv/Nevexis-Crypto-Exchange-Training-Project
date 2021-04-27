@@ -63,6 +63,7 @@ class OrdersTests extends BasicService {
 	@Test
 	public void cancelOrderTest() {
 		Orders order = service.cancelOrder(1l);
+		assertTrue(order != null);
 		assertTrue(em.find(Orders.class, order.getId()).getStatus().equals(StatusEnum.CANCELLED));
 	}
 
@@ -71,17 +72,18 @@ class OrdersTests extends BasicService {
 		em.find(Orders.class, 1L).setStatus(StatusEnum.CANCELLED);
 		em.find(Orders.class, 2L).setStatus(StatusEnum.CLOSED);
 		em.find(Orders.class, 3L).setStatus(StatusEnum.PARTIALLY_EXECUTED);
-		
+
 		List<Orders> allOpenOrders = service.getAllOrdersByStatus(StatusEnum.OPEN);
 		List<Orders> allCancelledOrders = service.getAllOrdersByStatus(StatusEnum.CANCELLED);
 		List<Orders> allPartiallyExecutedOrders = service.getAllOrdersByStatus(StatusEnum.PARTIALLY_EXECUTED);
 		List<Orders> allClosedOrders = service.getAllOrdersByStatus(StatusEnum.CLOSED);
-		
-		assertTrue(allOpenOrders.size() == 5 &&
-				allCancelledOrders.size() == 1 &&
-				allPartiallyExecutedOrders.size() == 1 &&
-				allClosedOrders.size() == 1);
-		
+
+		assertTrue(allOpenOrders != null && allCancelledOrders != null && allPartiallyExecutedOrders != null
+				&& allClosedOrders != null);
+
+		assertTrue(allOpenOrders.size() == 5 && allCancelledOrders.size() == 1 && allPartiallyExecutedOrders.size() == 1
+				&& allClosedOrders.size() == 1);
+
 		assertEquals(allCancelledOrders.get(0).getId(), 1L);
 		assertEquals(allClosedOrders.get(0).getId(), 2L);
 		assertEquals(allPartiallyExecutedOrders.get(0).getId(), 3L);
@@ -89,6 +91,24 @@ class OrdersTests extends BasicService {
 
 	@Test
 	public void getAllOpenOrdersByCurrencyPairAndOrderTypeTest() {
+		List<Orders> btcBuyOrders = service.getAllOpenOrdersByCurrencyPairAndOrderType(new CurrencyPairs("BTC", "USD"),
+				OrderType.BUY);
+		List<Orders> btcSellOrders = service.getAllOpenOrdersByCurrencyPairAndOrderType(new CurrencyPairs("BTC", "USD"),
+				OrderType.SELL);
+		List<Orders> adaBuyOrders = service.getAllOpenOrdersByCurrencyPairAndOrderType(new CurrencyPairs("ADA", "USD"),
+				OrderType.BUY);
+		List<Orders> adaSellOrders = service.getAllOpenOrdersByCurrencyPairAndOrderType(new CurrencyPairs("ADA", "USD"),
+				OrderType.SELL);
 
+		assertTrue(btcBuyOrders != null && btcBuyOrders.size() == 2);
+		assertTrue(btcSellOrders != null && btcSellOrders.size() == 2);
+		assertTrue(adaBuyOrders != null && adaBuyOrders.size() == 2);
+		assertTrue(adaSellOrders != null && adaSellOrders.size() == 2);
+
+		assertTrue(btcBuyOrders.get(0).getId().equals(1L) && btcBuyOrders.get(1).getId().equals(2L));
+		assertTrue(btcSellOrders.get(0).getId().equals(3L) && btcSellOrders.get(1).getId().equals(4L));
+
+		assertTrue(adaBuyOrders.get(0).getId().equals(5L) && adaBuyOrders.get(1).getId().equals(6L));
+		assertTrue(adaSellOrders.get(0).getId().equals(7L) && adaSellOrders.get(1).getId().equals(8L));
 	}
 }
