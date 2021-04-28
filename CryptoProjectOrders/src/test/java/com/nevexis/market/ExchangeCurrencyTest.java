@@ -1,6 +1,6 @@
 package com.nevexis.market;
 
-import static org.junit.Assert.assertTrue;
+//import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 
@@ -18,6 +18,8 @@ import com.nevexis.enums.OrderType;
 import com.nevexis.enums.StatusEnum;
 import com.nevexis.services.BasicService;
 import com.nevexis.services.DBService;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ActiveProfiles("test")

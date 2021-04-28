@@ -40,4 +40,21 @@ public class Controller {
 	public List<Orders> findAllOrdersByStatus(@PathVariable StatusEnum status) {
 		return dbService.getAllOrdersByStatus(status);
 	}
+
+
+	@GetMapping("/listOrders/type/{orderType}")
+	public List<Orders> findAllOrdersByOrderType(@PathVariable OrderType orderType){
+		return dbService.getAllOrdersByType(orderType);
+	}
+
+	@GetMapping("/listOrders/user/{traderId}")
+	public List<Orders> findAllOrdersByTraders(@PathVariable Long traderId){
+		return dbService.getAllOrdersByTrader(traderId);
+	}
+
+	@GetMapping("/listOrders/crypto/{cryptoCode}")
+	public List<Orders> findAllOrdersByCryptoCode(@PathVariable String cryptoCode){
+		return  dbService.getAllOrdersByCrypto(cryptoCode);
+	}
+
 }

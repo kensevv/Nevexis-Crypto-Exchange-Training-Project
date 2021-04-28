@@ -20,6 +20,9 @@ public class DBService extends BasicService {
 	private static final String getAllOrdersByStatus = "Orders.getAllOrdersByStatus";
 	private static final String getAllOpenOrdersByCurrencyPairAndOrderType = "Orders.getAllOpenOrdersByCurrencyPairAndOrderType";
 	private static final String getAllCurrencyPairs = "CurrencyPairs.getAllCurrencyPairs";
+	private static final String getAllOrdersByTrader = "Orders.getAllOrdersByTrader";
+	private static final String getAllOrdersByType = "Orders.getAllOrdersByType";
+	private static final String getAllOrdersByCrypto = "Orders.getAllOrdersByCrypto";
 
 	@Autowired
 	private MatchOrdersService matchOrdersService;
@@ -66,5 +69,22 @@ public class DBService extends BasicService {
 	public Long getCurrencyPairsCount() {
 		Long result = em.createQuery("SELECT count(c) FROM CurrencyPairs c", Long.class).getSingleResult();
 		return result;
+	}
+
+	public List<Orders> getAllOrdersByType(OrderType type){
+		return em.createNamedQuery(getAllOrdersByType, Orders.class).setMaxResults(100)
+				.setParameter("type", type).getResultList();
+
+
+	}
+
+	public List<Orders> getAllOrdersByTrader(Long id){
+		return em.createNamedQuery(getAllOrdersByTrader, Orders.class).setMaxResults(100)
+				.setParameter("id", id).getResultList();
+	}
+
+	public List<Orders> getAllOrdersByCrypto(String cryptoCode){
+		return em.createNamedQuery(getAllOrdersByCrypto,Orders.class).setMaxResults(100)
+				.setParameter("code",cryptoCode).getResultList();
 	}
 }

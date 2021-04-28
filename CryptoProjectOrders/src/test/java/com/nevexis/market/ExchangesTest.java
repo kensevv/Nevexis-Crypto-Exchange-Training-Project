@@ -1,6 +1,6 @@
 package com.nevexis.market;
 
-import static org.junit.Assert.assertTrue;
+//import static org.junit.Assert.assertTrue;
 
 import javax.transaction.Transactional;
 
@@ -15,6 +15,8 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.nevexis.entities.CurrencyPairs;
 import com.nevexis.services.BasicService;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ActiveProfiles("test")
