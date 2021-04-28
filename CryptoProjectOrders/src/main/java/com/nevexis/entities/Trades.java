@@ -3,15 +3,12 @@ package com.nevexis.entities;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 import com.nevexis.enums.OrderType;
 
 @Entity
+@NamedQuery(name = "Trades.getAllTradesByTrader", query = "SELECT t FROM Trades t WHERE t.order.trader.id = :id")
 public class Trades extends BaseEntity {
 	private Timestamp timestamp;
 
@@ -41,6 +38,7 @@ public class Trades extends BaseEntity {
 		this.exchangeRate = exchangeRate;
 	}
 
+	public Trades(){}
 	public Timestamp getTimestamp() {
 		return timestamp;
 	}

@@ -2,6 +2,7 @@ package com.nevexis.services;
 
 import java.util.List;
 
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ public class DBService extends BasicService {
 	private static final String getAllOrdersByTrader = "Orders.getAllOrdersByTrader";
 	private static final String getAllOrdersByType = "Orders.getAllOrdersByType";
 	private static final String getAllOrdersByCrypto = "Orders.getAllOrdersByCrypto";
+	private static final String getAllTradesByTrader = "Trades.getAllTradesByTrader";
 
 	@Autowired
 	private MatchOrdersService matchOrdersService;
@@ -86,5 +88,10 @@ public class DBService extends BasicService {
 	public List<Orders> getAllOrdersByCrypto(String cryptoCode){
 		return em.createNamedQuery(getAllOrdersByCrypto,Orders.class).setMaxResults(100)
 				.setParameter("code",cryptoCode).getResultList();
+	}
+
+	public List<Trades> getAllTradesByTrader(Long traderID){
+		return em.createNamedQuery(getAllTradesByTrader,Trades.class).setMaxResults(100)
+				.setParameter("id",traderID).getResultList();
 	}
 }

@@ -129,4 +129,5 @@ public class Orders extends BaseEntity {
 	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;
 	}
+
 }
