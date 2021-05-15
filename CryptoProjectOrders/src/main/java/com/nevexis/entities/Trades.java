@@ -8,9 +8,11 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 
 import com.nevexis.enums.OrderType;
 
+@NamedQuery(name = "Trades.getAllTradesByCurrencyPair", query = "SELECT t FROM Trades t Join t.currencyPair cp WHERE cp.cryptoCode = :cryptoCode AND cp.fiatCode = :fiatCode ORDER BY t.timestamp desc")
 @Entity
 public class Trades extends BaseEntity {
 	private Timestamp timestamp;

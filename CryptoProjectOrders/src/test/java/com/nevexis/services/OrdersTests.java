@@ -18,6 +18,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.nevexis.entities.CurrencyPairs;
 import com.nevexis.entities.Orders;
+import com.nevexis.enums.OrderExecuteType;
 import com.nevexis.enums.OrderType;
 import com.nevexis.enums.StatusEnum;
 import com.nevexis.market.Exchanges;
@@ -43,7 +44,7 @@ class OrdersTests extends BasicService {
 	@Test
 	public void createOrderTest() {
 		Orders newOrder = new Orders(service.getTraderById(1l), OrderType.BUY, new BigDecimal(5),
-				new CurrencyPairs("BTC", "USD"), new BigDecimal(10), StatusEnum.OPEN);
+				new CurrencyPairs("BTC", "USD"), new BigDecimal(10), StatusEnum.OPEN, OrderExecuteType.LIMIT, 1);
 
 		service.createOrder(newOrder);
 

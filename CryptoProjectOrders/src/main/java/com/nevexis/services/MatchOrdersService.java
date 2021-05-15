@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nevexis.bank.FakeBank;
-import com.nevexis.entities.CurrencyPairs;
 import com.nevexis.entities.Orders;
 import com.nevexis.entities.Trades;
+import com.nevexis.enums.OrderExecuteType;
+import com.nevexis.enums.OrderType;
 import com.nevexis.enums.StatusEnum;
 import com.nevexis.market.ExchangeCurrency;
 import com.nevexis.market.Exchanges;
@@ -23,23 +24,33 @@ public class MatchOrdersService {
 	@Autowired
 	private DBService dbService;
 
-	public void matchOrders(CurrencyPairs currencyPair) {
-		ExchangeCurrency currentExchange = exchanges.getExchangeByCurrencyPair(currencyPair);
+	public void matchOrders(Orders newOrder) {
+		ExchangeCurrency currentExchange = exchanges.getExchangeByCurrencyPair(newOrder.getCurrencyPair());
 		currentExchange.refreshAll();
 
 		Orders prioritySELLOrder = currentExchange.getSellersQueue().peek();
 		Orders priorityBUYOrder = currentExchange.getBuyersQueue().peek();
-		// end of recursion conditions
+
+		// recursion end conditions
 		if (null == priorityBUYOrder || null == prioritySELLOrder) {
 			return;
 		}
 
+		if (newOrder.getExecuteType().equals(OrderExecuteType.MARKET) 
+				&& !newOrder.getStatus().equals(StatusEnum.CLOSED)) {
+			adjustMarketOrder(newOrder, prioritySELLOrder, priorityBUYOrder);
+		}
+		
 		int compareExchanges = prioritySELLOrder.getExchangeRate().compareTo(priorityBUYOrder.getExchangeRate());
-
 		if (compareExchanges == 1) { // no match
 			return;
 		}
 
+		matchPriorityOrders(prioritySELLOrder, priorityBUYOrder);
+		matchOrders(newOrder);
+	}
+
+	private void matchPriorityOrders(Orders prioritySELLOrder, Orders priorityBUYOrder) {
 		// compare timestamps of the matching orders to determine the priority exchange
 		// rate that will be used for the transaction
 		BigDecimal priorityExchangeRate;
@@ -86,7 +97,6 @@ public class MatchOrdersService {
 			executeTransaction(priorityExchangeRate, prioritySELLOrder, executedAmount);
 			break;
 		}
-		matchOrders(currencyPair);
 	}
 
 	private void executeTransaction(BigDecimal priorityExchangeRate, Orders order, BigDecimal executedAmount) {
@@ -94,5 +104,16 @@ public class MatchOrdersService {
 				executedAmount, order.getOrderType(), priorityExchangeRate);
 		dbService.addTrade(newTrade);
 		bank.transfer(order.getTrader(), newTrade); // ?
+	}
+
+	private void adjustMarketOrder(Orders marketOrder, Orders prioritySELLOrder, Orders priorityBUYOrder) {
+		if (marketOrder.getOrderType().equals(OrderType.BUY)) {
+			priorityBUYOrder = marketOrder;
+			priorityBUYOrder.setExchangeRate(prioritySELLOrder.getExchangeRate());
+			
+		} else if (marketOrder.getOrderType().equals(OrderType.SELL)) {
+			prioritySELLOrder = marketOrder;
+			prioritySELLOrder.setExchangeRate(priorityBUYOrder.getExchangeRate());
+		}
 	}
 }

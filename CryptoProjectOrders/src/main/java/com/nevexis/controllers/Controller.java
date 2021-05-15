@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nevexis.dtos.CurrencyPairsDTO;
 import com.nevexis.entities.CurrencyPairs;
 import com.nevexis.entities.Orders;
+import com.nevexis.enums.OrderExecuteType;
 import com.nevexis.enums.OrderType;
 import com.nevexis.enums.StatusEnum;
 import com.nevexis.services.DBService;
@@ -24,11 +26,11 @@ public class Controller {
 
 	@PostMapping("/{trader}/create/order")
 	public Orders createNewOrder(@PathVariable("trader") Long traderID, @RequestParam OrderType orderType,
-			@RequestBody CurrencyPairs currencyPair, @RequestParam BigDecimal exchangeRate,
-			@RequestParam BigDecimal amount) {
+			@RequestBody CurrencyPairsDTO currencyPairDTO, @RequestParam BigDecimal exchangeRate,
+			@RequestParam BigDecimal amount, @RequestParam OrderExecuteType executeType, @RequestParam Integer leverage) {
 
 		return dbService.createOrder(new Orders(dbService.getTraderById(traderID), orderType, exchangeRate,
-				dbService.findCurrencyPair(currencyPair), amount, StatusEnum.OPEN));
+				dbService.findCurrencyPair(new CurrencyPairs(currencyPairDTO)), amount, StatusEnum.OPEN, executeType, leverage));
 	}
 
 	@PostMapping("/cancel/{orderId}")
@@ -56,5 +58,4 @@ public class Controller {
 	public List<Orders> findAllOrdersByCryptoCode(@PathVariable String cryptoCode){
 		return  dbService.getAllOrdersByCrypto(cryptoCode);
 	}
-
 }

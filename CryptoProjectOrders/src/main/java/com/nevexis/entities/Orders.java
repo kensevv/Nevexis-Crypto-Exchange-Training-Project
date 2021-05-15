@@ -13,14 +13,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import com.nevexis.enums.OrderExecuteType;
 import com.nevexis.enums.OrderType;
 import com.nevexis.enums.StatusEnum;
 
 @Entity
 @NamedQuery(name = "Orders.getAllOrdersByStatus", query = "SELECT o FROM Orders o WHERE o.status = :status")
-@NamedQuery(name = "Orders.getAllOrdersByType",query = "SELECT o FROM Orders o WHERE o.orderType= :type")
-@NamedQuery(name="Orders.getAllOrdersByTrader",query = "SELECT o FROM Orders o WHERE o.trader.id = :id")
-@NamedQuery(name="Orders.getAllOrdersByCrypto",query = "SELECT o FROM Orders o WHERE o.currencyPair.cryptoCode = :code")
+@NamedQuery(name = "Orders.getAllOrdersByType", query = "SELECT o FROM Orders o WHERE o.orderType= :type")
+@NamedQuery(name = "Orders.getAllOrdersByTrader", query = "SELECT o FROM Orders o WHERE o.trader.id = :id")
+@NamedQuery(name = "Orders.getAllOrdersByCrypto", query = "SELECT o FROM Orders o WHERE o.currencyPair.cryptoCode = :code")
 @NamedQuery(name = "Orders.getAllOpenOrdersByCurrencyPairAndOrderType", query = "SELECT o FROM Orders o Join o.currencyPair cp WHERE o.status IN ('OPEN','PARTIALLY_EXECUTED') AND o.orderType = :orderType AND cp.cryptoCode = :cryptoCode AND cp.fiatCode = :fiatCode")
 @Table(indexes = @Index(columnList = "timestamp"))
 public class Orders extends BaseEntity {
@@ -35,7 +36,7 @@ public class Orders extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private OrderType orderType;
 
-	@Column(nullable = false, precision = 19, scale = 10)
+	@Column(precision = 19, scale = 10)
 	private BigDecimal exchangeRate;
 
 	@ManyToOne
@@ -51,11 +52,18 @@ public class Orders extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private StatusEnum status;
 
+	@Column(length = 20, columnDefinition = "varchar(20) default 'LIMIT'", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private OrderExecuteType executeType;
+
+	@Column
+	private Integer leverage;
+
 	public Orders() {
 	}
 
 	public Orders(Traders trader, OrderType orderType, BigDecimal exchangeRate, CurrencyPairs currencyPair,
-			BigDecimal amount, StatusEnum status) {
+			BigDecimal amount, StatusEnum status, OrderExecuteType executeType, Integer leverage) {
 		this.timestamp = new Timestamp(System.currentTimeMillis());
 		this.setTrader(trader);
 		this.setOrderType(orderType);
@@ -64,6 +72,8 @@ public class Orders extends BaseEntity {
 		this.setAmount(amount);
 		this.setRemainingAmount(amount);
 		this.setStatus(status);
+		this.setExecuteType(executeType);
+		this.setLeverage(leverage);
 	}
 
 	public Timestamp getTimestamp() {
@@ -128,5 +138,21 @@ public class Orders extends BaseEntity {
 
 	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	public OrderExecuteType getExecuteType() {
+		return executeType;
+	}
+
+	public void setExecuteType(OrderExecuteType executeType) {
+		this.executeType = executeType;
+	}
+
+	public Integer getLeverage() {
+		return leverage;
+	}
+
+	public void setLeverage(Integer leverage) {
+		this.leverage = leverage;
 	}
 }

@@ -14,6 +14,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.nevexis.entities.CurrencyPairs;
 import com.nevexis.entities.Orders;
+import com.nevexis.enums.OrderExecuteType;
 import com.nevexis.enums.OrderType;
 import com.nevexis.enums.StatusEnum;
 import com.nevexis.services.BasicService;
@@ -62,9 +63,9 @@ class ExchangeCurrencyTest extends BasicService {
 		assertTrue(btcExchange.getBuyersQueue().size() == 2 && btcExchange.getSellersQueue().size() == 2);
 		
 		Orders newBuyOrder = new Orders(dbService.getTraderById(1l), OrderType.BUY, new BigDecimal(5),
-				new CurrencyPairs("BTC", "USD"), new BigDecimal(10), StatusEnum.OPEN);
+				new CurrencyPairs("BTC", "USD"), new BigDecimal(10), StatusEnum.OPEN, OrderExecuteType.LIMIT, 1);
 		Orders newSellOrder = new Orders(dbService.getTraderById(1l), OrderType.SELL, new BigDecimal(5),
-				new CurrencyPairs("BTC", "USD"), new BigDecimal(10), StatusEnum.OPEN);
+				new CurrencyPairs("BTC", "USD"), new BigDecimal(10), StatusEnum.OPEN, OrderExecuteType.LIMIT, 1);
 		
 		em.persist(newBuyOrder);
 		em.persist(newSellOrder);
