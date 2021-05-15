@@ -8,4 +8,5 @@ public class Queries {
 	public static final String getAllOrdersByType = "Orders.getAllOrdersByType";
 	public static final String getAllOrdersByCrypto = "Orders.getAllOrdersByCrypto";
 	public static final String getAllTradesByCurrencyPair = "Trades.getAllTradesByCurrencyPair";
+	public static final String getAllTradesByTrader = "Trades.getAllTradesByTrader";
 }
