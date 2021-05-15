@@ -86,4 +86,9 @@ public class DBService extends BasicService {
 				.setParameter("fiatCode", currencyPair.getFiatCode())
 				.getResultList();
 	}
+
+	public List<Trades> getAllTradesByTrader(Long traderID){
+		return em.createNamedQuery(Queries.getAllTradesByTrader,Trades.class).setMaxResults(100)
+				.setParameter("id",traderID).getResultList();
+	}
 }

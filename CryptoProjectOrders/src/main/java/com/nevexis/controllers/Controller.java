@@ -3,6 +3,7 @@ package com.nevexis.controllers;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.nevexis.entities.Trades;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,23 +40,27 @@ public class Controller {
 	}
 
 	@GetMapping("/listOrders/{status}")
-	public List<Orders> findAllOrdersByStatus(@PathVariable StatusEnum status) {
+	public List<Orders> getAllOrdersByStatus(@PathVariable StatusEnum status) {
 		return dbService.getAllOrdersByStatus(status);
 	}
 
-
 	@GetMapping("/listOrders/type/{orderType}")
-	public List<Orders> findAllOrdersByOrderType(@PathVariable OrderType orderType){
+	public List<Orders> getAllOrdersByOrderType(@PathVariable OrderType orderType){
 		return dbService.getAllOrdersByType(orderType);
 	}
 
 	@GetMapping("/listOrders/user/{traderId}")
-	public List<Orders> findAllOrdersByTraders(@PathVariable Long traderId){
+	public List<Orders> getAllOrdersByTraders(@PathVariable Long traderId){
 		return dbService.getAllOrdersByTrader(traderId);
 	}
 
 	@GetMapping("/listOrders/crypto/{cryptoCode}")
-	public List<Orders> findAllOrdersByCryptoCode(@PathVariable String cryptoCode){
+	public List<Orders> getAllOrdersByCryptoCode(@PathVariable String cryptoCode){
 		return  dbService.getAllOrdersByCrypto(cryptoCode);
+	}
+
+	@GetMapping("/listTrades/{traderID}")
+	public List<Trades> getAllTradesByTrader(@PathVariable Long traderID){
+		return dbService.getAllTradesByTrader(traderID);
 	}
 }
