@@ -13,12 +13,15 @@ import com.nevexis.entities.Traders;
 import com.nevexis.entities.Trades;
 import com.nevexis.enums.OrderType;
 import com.nevexis.enums.StatusEnum;
+import com.nevexis.margin.MarginService;
 
 @Service
 @Transactional
 public class DBService extends BasicService {
 	@Autowired
 	private MatchOrdersService matchOrdersService;
+	@Autowired
+	private MarginService marginService;
 
 	public Traders getTraderById(Long id) {
 		return em.find(Traders.class, id);
@@ -31,6 +34,9 @@ public class DBService extends BasicService {
 	public Orders createOrder(Orders newOrder) {
 		em.persist(newOrder);
 		matchOrdersService.matchOrders(newOrder);
+		if(newOrder.getLeverage() > 1) {
+			marginService.openPosition(newOrder);
+		}
 		return newOrder;
 	}
 
@@ -41,22 +47,24 @@ public class DBService extends BasicService {
 	}
 
 	public List<Orders> getAllOrdersByStatus(StatusEnum status) {
-		return em.createNamedQuery(Queries.getAllOrdersByStatus, Orders.class).setMaxResults(100)
+		return em.createNamedQuery(NamedQueries.getAllOrdersByStatus, Orders.class).setMaxResults(100)
 				.setParameter("status", status).getResultList();
 	}
 
 	public List<Orders> getAllOpenOrdersByCurrencyPairAndOrderType(CurrencyPairs currencyPair, OrderType orderType) {
-		return em.createNamedQuery(Queries.getAllOpenOrdersByCurrencyPairAndOrderType, Orders.class).setMaxResults(10)
+		return em.createNamedQuery(NamedQueries.getAllOpenOrdersByCurrencyPairAndOrderType, Orders.class).setMaxResults(10)
 				.setParameter("orderType", orderType).setParameter("cryptoCode", currencyPair.getCryptoCode())
 				.setParameter("fiatCode", currencyPair.getFiatCode()).getResultList();
 	}
 
 	public List<CurrencyPairs> getAllCurrencyPairs() {
-		return em.createNamedQuery(Queries.getAllCurrencyPairs, CurrencyPairs.class).setMaxResults(20).getResultList();
+		return em.createNamedQuery(NamedQueries.getAllCurrencyPairs, CurrencyPairs.class).setMaxResults(20).getResultList();
 	}
 
-	public void addTrade(Trades newTrade) {
-		em.persist(newTrade);
+	public void addTrades(Trades... trades) {
+		for (Trades trade : trades) {
+			em.persist(trade);
+		}
 	}
 
 	public Long getCurrencyPairsCount() {
@@ -65,30 +73,30 @@ public class DBService extends BasicService {
 	}
 
 	public List<Orders> getAllOrdersByType(OrderType type) {
-		return em.createNamedQuery(Queries.getAllOrdersByType, Orders.class).setMaxResults(100)
+		return em.createNamedQuery(NamedQueries.getAllOrdersByType, Orders.class).setMaxResults(100)
 				.setParameter("type", type).getResultList();
 
 	}
 
 	public List<Orders> getAllOrdersByTrader(Long id) {
-		return em.createNamedQuery(Queries.getAllOrdersByTrader, Orders.class).setMaxResults(100).setParameter("id", id)
+		return em.createNamedQuery(NamedQueries.getAllOrdersByTrader, Orders.class).setMaxResults(100).setParameter("id", id)
 				.getResultList();
 	}
 
 	public List<Orders> getAllOrdersByCrypto(String cryptoCode) {
-		return em.createNamedQuery(Queries.getAllOrdersByCrypto, Orders.class).setMaxResults(100)
+		return em.createNamedQuery(NamedQueries.getAllOrdersByCrypto, Orders.class).setMaxResults(100)
 				.setParameter("code", cryptoCode).getResultList();
 	}
 
 	public List<Trades> getAllTradesByCurrencyPair(CurrencyPairs currencyPair) {
-		return em.createNamedQuery(Queries.getAllTradesByCurrencyPair, Trades.class).setMaxResults(1000)
+		return em.createNamedQuery(NamedQueries.getAllTradesByCurrencyPair, Trades.class).setMaxResults(1000)
 				.setParameter("cryptoCode", currencyPair.getCryptoCode())
 				.setParameter("fiatCode", currencyPair.getFiatCode())
 				.getResultList();
 	}
 
 	public List<Trades> getAllTradesByTrader(Long traderID){
-		return em.createNamedQuery(Queries.getAllTradesByTrader,Trades.class).setMaxResults(100)
+		return em.createNamedQuery(NamedQueries.getAllTradesByTrader,Trades.class).setMaxResults(100)
 				.setParameter("id",traderID).getResultList();
 	}
 }

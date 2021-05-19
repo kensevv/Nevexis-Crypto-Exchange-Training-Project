@@ -2,5 +2,7 @@ package com.nevexis.enums;
 
 public enum OrderExecuteType {
 	LIMIT,
-	MARKET
+	MARKET,
+	STOP_LOSS,
+	TAKE_PROFIT
 }

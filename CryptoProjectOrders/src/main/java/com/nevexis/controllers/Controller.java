@@ -1,7 +1,13 @@
 package com.nevexis.controllers;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import com.nevexis.entities.Trades;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nevexis.dtos.CurrencyPairsDTO;
 import com.nevexis.entities.CurrencyPairs;
 import com.nevexis.entities.Orders;
+import com.nevexis.enums.FileType;
 import com.nevexis.enums.OrderExecuteType;
 import com.nevexis.enums.OrderType;
 import com.nevexis.enums.StatusEnum;
+import com.nevexis.report.Report;
 import com.nevexis.services.DBService;
 
 @RestController
@@ -62,5 +70,17 @@ public class Controller {
 	@GetMapping("/listTrades/{traderID}")
 	public List<Trades> getAllTradesByTrader(@PathVariable Long traderID){
 		return dbService.getAllTradesByTrader(traderID);
+	}
+	
+	@GetMapping("/getReport/CurrencyPairs")
+	public void getReport(@RequestParam  FileType fileType, final HttpServletResponse response)
+			throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, IOException {
+		
+		response.setContentType(String.format("application/%s", fileType.name().toLowerCase()));
+		response.setHeader("Content-Disposition", String.format("attachment;filename=CurrencyPairs.%s", fileType.name().toLowerCase()));
+		
+		Method method = Report.class.getMethod(String.format("get%s", fileType.name().toUpperCase()), Object[].class, OutputStream.class);
+		method.invoke(Report.class, dbService.getAllCurrencyPairs().toArray(),  response.getOutputStream());
 	}
 }

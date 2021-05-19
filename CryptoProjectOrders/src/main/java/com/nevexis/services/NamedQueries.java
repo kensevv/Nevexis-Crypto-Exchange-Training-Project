@@ -1,6 +1,6 @@
 package com.nevexis.services;
 
-public class Queries {
+public class NamedQueries {
 	public static final String getAllOrdersByStatus = "Orders.getAllOrdersByStatus";
 	public static final String getAllOpenOrdersByCurrencyPairAndOrderType = "Orders.getAllOpenOrdersByCurrencyPairAndOrderType";
 	public static final String getAllCurrencyPairs = "CurrencyPairs.getAllCurrencyPairs";
