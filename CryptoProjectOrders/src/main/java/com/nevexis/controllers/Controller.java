@@ -73,7 +73,7 @@ public class Controller {
 	}
 	
 	@GetMapping("/getReport/CurrencyPairs")
-	public void getReport(@RequestParam  FileType fileType, final HttpServletResponse response)
+	public void getCurrencyReport(@RequestParam  FileType fileType, final HttpServletResponse response)
 			throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, IOException {
 		
