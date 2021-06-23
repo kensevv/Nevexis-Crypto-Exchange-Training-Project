@@ -11,10 +11,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 
 import com.nevexis.enums.OrderType;
+import com.nevexis.services.NamedQueries;
 
-@NamedQuery(name = "Trades.getAllTradesByCurrencyPair", query = "SELECT t FROM Trades t Join t.currencyPair cp WHERE cp.cryptoCode = :cryptoCode AND cp.fiatCode = :fiatCode ORDER BY t.timestamp desc")
+@NamedQuery(name = NamedQueries.getAllTradesByCurrencyPair, query = "SELECT t FROM Trades t Join t.currencyPair cp WHERE cp.cryptoCode = :cryptoCode AND cp.fiatCode = :fiatCode ORDER BY t.timestamp desc")
 @Entity
-@NamedQuery(name = "Trades.getAllTradesByTrader", query = "SELECT t FROM Trades t WHERE t.order.trader.id = :id")
+@NamedQuery(name = NamedQueries.getAllTradesByTrader, query = "SELECT t FROM Trades t WHERE t.order.trader.id = :id")
 public class Trades extends BaseEntity {
 	private Timestamp timestamp;
 

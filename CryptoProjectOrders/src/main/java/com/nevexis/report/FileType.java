@@ -1,4 +1,4 @@
-package com.nevexis.enums;
+package com.nevexis.report;
 
 public enum FileType {
 	TXT,

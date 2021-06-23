@@ -1,4 +1,4 @@
-package com.nevexis;
+package com.nevexis.configs;
 
 import javax.annotation.PostConstruct;
 

@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nevexis.dtos.CurrencyPairsDTO;
 import com.nevexis.entities.CurrencyPairs;
 import com.nevexis.entities.Orders;
-import com.nevexis.enums.FileType;
 import com.nevexis.enums.OrderExecuteType;
 import com.nevexis.enums.OrderType;
 import com.nevexis.enums.StatusEnum;
+import com.nevexis.report.FileType;
 import com.nevexis.report.Report;
 import com.nevexis.services.DBService;
 

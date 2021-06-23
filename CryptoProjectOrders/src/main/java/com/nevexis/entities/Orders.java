@@ -16,13 +16,14 @@ import javax.persistence.Table;
 import com.nevexis.enums.OrderExecuteType;
 import com.nevexis.enums.OrderType;
 import com.nevexis.enums.StatusEnum;
+import com.nevexis.services.NamedQueries;
 
 @Entity
-@NamedQuery(name = "Orders.getAllOrdersByStatus", query = "SELECT o FROM Orders o WHERE o.status = :status")
-@NamedQuery(name = "Orders.getAllOrdersByType", query = "SELECT o FROM Orders o WHERE o.orderType= :type")
-@NamedQuery(name = "Orders.getAllOrdersByTrader", query = "SELECT o FROM Orders o WHERE o.trader.id = :id")
-@NamedQuery(name = "Orders.getAllOrdersByCrypto", query = "SELECT o FROM Orders o WHERE o.currencyPair.cryptoCode = :code")
-@NamedQuery(name = "Orders.getAllOpenOrdersByCurrencyPairAndOrderType", query = "SELECT o FROM Orders o Join o.currencyPair cp WHERE o.status IN ('OPEN','PARTIALLY_EXECUTED') AND o.orderType = :orderType AND cp.cryptoCode = :cryptoCode AND cp.fiatCode = :fiatCode")
+@NamedQuery(name = NamedQueries.getAllOrdersByStatus, query = "SELECT o FROM Orders o WHERE o.status = :status")
+@NamedQuery(name = NamedQueries.getAllOrdersByType, query = "SELECT o FROM Orders o WHERE o.orderType= :type")
+@NamedQuery(name = NamedQueries.getAllOrdersByTrader, query = "SELECT o FROM Orders o WHERE o.trader.id = :id")
+@NamedQuery(name = NamedQueries.getAllOrdersByCrypto, query = "SELECT o FROM Orders o WHERE o.currencyPair.cryptoCode = :code")
+@NamedQuery(name = NamedQueries.getAllOpenOrdersByCurrencyPairAndOrderType, query = "SELECT o FROM Orders o Join o.currencyPair cp WHERE o.status IN ('OPEN','PARTIALLY_EXECUTED') AND o.orderType = :orderType AND cp.cryptoCode = :cryptoCode AND cp.fiatCode = :fiatCode")
 @Table(indexes = @Index(columnList = "timestamp"))
 public class Orders extends BaseEntity {
 

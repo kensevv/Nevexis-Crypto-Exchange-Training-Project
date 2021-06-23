@@ -7,10 +7,11 @@ import javax.persistence.IdClass;
 import javax.persistence.NamedQuery;
 
 import com.nevexis.dtos.CurrencyPairsDTO;
+import com.nevexis.services.NamedQueries;
 
 @Entity
 @IdClass(CurrencyPairsId.class)
-@NamedQuery(name = "CurrencyPairs.getAllCurrencyPairs", query = "SELECT c FROM CurrencyPairs c")
+@NamedQuery(name = NamedQueries.getAllCurrencyPairs, query = "SELECT c FROM CurrencyPairs c")
 public class CurrencyPairs {
 	@Id
 	private String cryptoCode;
